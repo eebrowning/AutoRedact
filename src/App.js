@@ -37,9 +37,10 @@ function App() {
     //block of redactions:
     let block = document.getElementById('redo-redacted').value;
     console.log(block)
-    let inputString = block.trim();
-    // let inputString = 'Hello world "Dutch is Best", "Pepperoni Pizza", \'Drone at the military base\', \'beer\'';
-    // inputString = inputString.split(',').join(' ');
+
+    let inputString = `${block.trim()}`;//PROBLEM, but ran out of time
+    ////I need to learn how to sanitize inputs: copy / pasting from another source interferes with REGEX
+    ////Regex currently only matches correctly on manual inputs or copy / paste from a plain text source.
 
     //regex breakdown:
     //for double Q: /"([^"]*)" 
@@ -50,17 +51,13 @@ function App() {
 
     let matches = [];
     let match;
-
     while ((match = regexPattern.exec(inputString)) !== null) {
-      const matchedPart = match[1] || match[2] || match[0]; // Use match[1] if it exists, otherwise use match[2], or use match[0] (non-quoted part)
+      const matchedPart = match[0] || match[1] || match[2];
       matches.push(matchedPart);
     }
-
-    console.log(matches);
-
     matches = matches.filter(entry => entry != ',')
-
     setRedactedPhrases(matches)
+    console.log(redactedPhrases);
 
   }
 
@@ -79,12 +76,9 @@ function App() {
 
 
   function downloadFile() {
-
     const fileName = "redacted.txt";
-
     const element = document.createElement('a');
     const file = new Blob([redactedText], { type: 'text/plain' });
-
     element.href = URL.createObjectURL(file);
     element.download = fileName;
     document.body.appendChild(element);
@@ -96,7 +90,6 @@ function App() {
   return (
     <div className="App">
 
-
       <div id='inputs'>
         <label>
           <span>Text file upload</span>
@@ -107,13 +100,23 @@ function App() {
           <button onClick={handleBlockSubmit}> or Submit Text Block</button>
         </label>
 
-        {/* <input type='text' id='redacted-phrase' />
-        <button onClick={addRedaction}>Add phrase to redacted phrases</button> */}
-
-        <input type='text' id='redo-redacted' />
-        <button onClick={addRedactionBlock}>Add group of phrases to redact</button>
-
       </div>
+
+      <div id='middle-group'>
+
+        <div id='working-redact'>
+          <input type='text' id='redacted-phrase' placeholder='Single Phrase' />
+          <button onClick={addRedaction}>Add individual phrase to redacted phrases</button>
+
+        </div>
+        <div id='redact-options'>
+
+          <textarea type='text' id='redo-redacted' placeholder='String of Phrases' />
+          <button onClick={addRedactionBlock}>Clear Individual phrases / Add group of phrases to redact</button>
+          <p>Hit time limit--Known issues on group input: need to drop quotes when adding to list of phrases, regex inaccurate on copy / paste unless unformatted, string needs to be sanitized.</p>
+        </div>
+      </div>
+
 
       <h2>Phrases to redact</h2>
       <div id='phrases'>
@@ -125,6 +128,7 @@ function App() {
           ))
         }
       </div>
+
 
       <div>
         <button id='confirm-redaction' onClick={redactFile}>Redact Phrases</button>

@@ -2,9 +2,47 @@
   text-align: center;
 }
 
-#inputs {
+
+label {
   display: flex;
   flex-direction: column;
+}
+
+#inputs {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
+
+}
+
+#block-input {
+  height: 80px;
+  width: 400px;
+}
+
+#working-redact {
+  display: flex;
+  align-items: center;
+  border: 1px solid chartreuse;
+  justify-content: center;
+  max-width: 50%;
+  height: 100px;
+
+}
+
+#redact-options {
+  display: flex;
+  flex-direction: column;
+  /* width: 50%; */
+  max-width: 50%;
+  border: 1px solid red;
+}
+
+#middle-group {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 #phrases {
