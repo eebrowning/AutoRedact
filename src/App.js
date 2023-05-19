@@ -10,24 +10,14 @@ function App() {
   const [redactedText, setRedactedText] = useState("");
 
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = (event) => {//upload file, and read its contents
     const file = event.target.files[0];
-    const reader = new FileReader();
+    const reader = new FileReader(); //had to refer to https://developer.mozilla.org/en-US/docs/Web/API/FileReader
 
     reader.onload = (e) => {
       const fileContents = e.target.result;
-
-      // Here I can manipulate the content.
-      console.log(fileContents);
-
-      let contentArray = fileContents.split(" ");
-
-
-      console.log(contentArray)
-
-      setUserText(fileContents)
-
-
+      // setUserText(fileContents);//maybe not needed?
+      setRedactedText(fileContents)
     };
 
     reader.readAsText(file); // Read the file as text
@@ -37,13 +27,20 @@ function App() {
     if (redactedPhrases.indexOf(document.getElementById('redacted-phrase').value) == -1) {
       setRedactedPhrases([...redactedPhrases, document.getElementById('redacted-phrase').value])
     }
-    // console.log(redactedPhrases)
 
   }
 
   const redactFile = () => {
+    // Here I can manipulate the content.
+    //simple regex: 
+    ////literal matches, piped together, searched globally and case-insensitive:
+    const redactRegex = new RegExp(redactedPhrases.join('|'), 'gi');
+    ////could be improved to avoid things like redacting 'to' resulting in 'alXXXXgether' from 'altogether'
+    ////but, in this case, I doubt anyone will be redacting smaller words that can lie within others.
 
+    const redactedString = redactedText.replace(redactRegex, 'XXXX');//swap out phrases.
 
+    setRedactedText(redactedString);
   }
 
 
@@ -52,45 +49,42 @@ function App() {
     const fileName = "redacted.txt"; // Replace with your desired file name
 
     const element = document.createElement('a');
-    const file = new Blob([userText], { type: 'text/plain' });//replace user text with redacted text when the time comes
+    const file = new Blob([redactedText], { type: 'text/plain' });//replace user text with redacted text when the time comes
 
     element.href = URL.createObjectURL(file);
     element.download = fileName;
     document.body.appendChild(element);
     element.click();
-
     document.body.removeChild(element);
   }
 
 
-
-
-
   return (
     <div className="App">
-      {/* <header className="App-header">
-      </header> */}
+
 
       <div id='inputs'>
-
         <input type="file" id="fileInput" onChange={handleFileUpload} />
         <input type='text' id='redacted-phrase' />
-        <button onClick={addRedaction}> Add phrase to redact</button>
-
-        <button id="downloadButton" onClick={downloadFile}>Download Redacted File</button>
-
+        <button onClick={addRedaction}>Add phrase to redact</button>
       </div>
       <div>
+        <button id='confirm-redaction' onClick={redactFile}>Confirm Phrases</button>
+        <button id="downloadButton" onClick={downloadFile}>Download Redacted File</button>
+      </div>
+
+      <div id='phrases'> Phrases
         {
           redactedPhrases.map(phrase => (
-            <h3 key={phrase}>
+            <h3 className='phrase' key={phrase}>
               {phrase}
             </h3>
           ))
         }
       </div>
+      <h2>Current Text</h2>
       <p>
-        {userText}
+        {redactedText}
       </p>
     </div>
   );

@@ -6,3 +6,13 @@
   display: flex;
   flex-direction: column;
 }
+
+#phrases {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100cqmin;
+}
+
+.phrase {
+  border: 1px solid red;
+}
