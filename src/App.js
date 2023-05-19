@@ -68,12 +68,9 @@ function App() {
         <input type='text' id='redacted-phrase' />
         <button onClick={addRedaction}>Add phrase to redact</button>
       </div>
-      <div>
-        <button id='confirm-redaction' onClick={redactFile}>Confirm Phrases</button>
-        <button id="downloadButton" onClick={downloadFile}>Download Redacted File</button>
-      </div>
 
-      <div id='phrases'> Phrases
+      <h2>Phrases to redact</h2>
+      <div id='phrases'>
         {
           redactedPhrases.map(phrase => (
             <h3 className='phrase' key={phrase}>
@@ -81,6 +78,10 @@ function App() {
             </h3>
           ))
         }
+      </div>
+      <div>
+        <button id='confirm-redaction' onClick={redactFile}>Redact Phrases</button>
+        <button id="downloadButton" onClick={downloadFile}>Download Redacted File</button>
       </div>
       <h2>Current Text</h2>
       <p>
