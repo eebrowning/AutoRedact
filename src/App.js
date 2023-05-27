@@ -35,24 +35,22 @@ function App() {
   }
   ////I need to learn how to sanitize inputs: copy / pasting from another source interferes with REGEX
   ////Regex currently only matches correctly on manual inputs or copy / paste from a plain text source.
-  //////UPDATE 5/27/23-> IT'S THE EFFING QUOTES
+  //////UPDATE 5/27/23-> IT'S THE EFFING QUOTES -> check current solution
   /////->find a way to replace any non-standard space / punctuation / character 
   // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
-  // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
+  // Versus this string: < Hello world 'Dutch is Best', "Pepperoni Pizza", "Drone at the military base", 'beer' >
   const addRedactionBlock = () => {
     //block of redactions:
     let block = document.getElementById('redo-redacted').value;
-    // console.log(block, typeof block)
-
-    // let inputString = block.replace(/[ ]/g, ' ');
-    let inputString = block.split(' ').join(" ")
-
-    // let inputString = `${block.trim()}`;//PROBLEM, but ran out of time
-    // let inputString = block;//back up a little
 
 
-
-
+    block = block.replace(/[^\x00-\x7F]/g, '"');
+    //current solution to curly quotes--> replace ANY non-standard with a standard double quote <">, see below
+    // https://stackoverflow.com/questions/150033/regular-expression-to-match-non-ascii-characters
+    // non-standard characters of any other kind may break this by introducing a single character of the double quote <">,
+    // but current scrubbing of quotes later on may keep that from happening /shrug
+    console.log(block)
+    let inputString = block;//back up a little
     //regex breakdown:
     //for double Q: /"([^"]*)" 
     //for single Q: /'([^']*)'
@@ -73,8 +71,8 @@ function App() {
       // console.log('test regex on block', inputString.slice(lastIndex, match.index))
 
       let currentPhrase = match[0];
-      currentPhrase = currentPhrase.replace(/["',.]/g, '')
-      if (currentPhrase) matches.push(currentPhrase.trim());
+      currentPhrase = currentPhrase.replace(/["',.]/g, '');
+      if (currentPhrase && matches.indexOf(currentPhrase) == -1) matches.push(currentPhrase.trim());
 
     }
     setRedactedPhrases(matches)
@@ -134,7 +132,7 @@ function App() {
 
           <textarea type='text' id='redo-redacted' placeholder='String of Phrases' />
           <button onClick={addRedactionBlock}>Clear Individual phrases / Add group of phrases to redact</button>
-          <p>Hit time limit--Known issues on group input: need to drop quotes when adding to list of phrases, regex inaccurate on copy / paste unless unformatted, string needs to be sanitized.</p>
+          <p>Post Time Limit: 5/27/23, This seems as close to 'correct' as I think I can get</p>
         </div>
       </div>
 
