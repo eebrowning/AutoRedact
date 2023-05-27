@@ -33,17 +33,25 @@ function App() {
       setRedactedPhrases([...redactedPhrases, document.getElementById('redacted-phrase').value])
     }
   }
+  ////I need to learn how to sanitize inputs: copy / pasting from another source interferes with REGEX
+  ////Regex currently only matches correctly on manual inputs or copy / paste from a plain text source.
+  //////UPDATE 5/27/23-> IT'S THE EFFING QUOTES
+  /////->find a way to replace any non-standard space / punctuation / character 
+  // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
+  // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
   const addRedactionBlock = () => {
     //block of redactions:
     let block = document.getElementById('redo-redacted').value;
+    // console.log(block, typeof block)
+
+    // let inputString = block.replace(/[ ]/g, ' ');
+    let inputString = block.split(' ').join(" ")
 
     // let inputString = `${block.trim()}`;//PROBLEM, but ran out of time
-    let inputString = block;//back up a little
+    // let inputString = block;//back up a little
 
-    ////I need to learn how to sanitize inputs: copy / pasting from another source interferes with REGEX
-    ////Regex currently only matches correctly on manual inputs or copy / paste from a plain text source.
 
-    // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
+
 
     //regex breakdown:
     //for double Q: /"([^"]*)" 
@@ -52,15 +60,13 @@ function App() {
     // const doubleQ = /"([^"]*)"/g;
     // const singleQ = /'([^']*)'/g;
     // const singleWord = /\S+/gi;
-    //global search
-    // const regexSplit = /"([^"]*)"|'([^']*)'/gi; //reliably gets quoted areas. 
-    // console.log(inputString.split(regexSplit))
+
     const regexPattern = /"([^"]*)"|'([^']*)'|\S+/gi;
 
     let matches = [];
     let match;
 
-    //    ////Below is 'working'
+    //    ////Below is 'working' -> ITS THE QUOTATION MARKS THAT ARE INCONSISTENT!!!!!!!
 
     while (match = regexPattern.exec(inputString)) {
       //blaaah this isn't picking up correctly on paste with formatting.
@@ -68,7 +74,7 @@ function App() {
 
       let currentPhrase = match[0];
       currentPhrase = currentPhrase.replace(/["',.]/g, '')
-      matches.push(currentPhrase.trim());
+      if (currentPhrase) matches.push(currentPhrase.trim());
 
     }
     setRedactedPhrases(matches)
