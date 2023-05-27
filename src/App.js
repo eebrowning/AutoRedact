@@ -36,26 +36,41 @@ function App() {
   const addRedactionBlock = () => {
     //block of redactions:
     let block = document.getElementById('redo-redacted').value;
-    console.log(block)
 
-    let inputString = `${block.trim()}`;//PROBLEM, but ran out of time
+    // let inputString = `${block.trim()}`;//PROBLEM, but ran out of time
+    let inputString = block;//back up a little
+
     ////I need to learn how to sanitize inputs: copy / pasting from another source interferes with REGEX
     ////Regex currently only matches correctly on manual inputs or copy / paste from a plain text source.
+
+    // Test this string: < Hello world “Dutch is Best”, “Pepperoni Pizza”, ‘Drone at the military base’, ‘beer’ >
 
     //regex breakdown:
     //for double Q: /"([^"]*)" 
     //for single Q: /'([^']*)'
     //for any lingering single words: /\S+
+    // const doubleQ = /"([^"]*)"/g;
+    // const singleQ = /'([^']*)'/g;
+    // const singleWord = /\S+/gi;
     //global search
-    const regexPattern = /"([^"]*)"|'([^']*)'|\S+/g;
+    // const regexSplit = /"([^"]*)"|'([^']*)'/gi; //reliably gets quoted areas. 
+    // console.log(inputString.split(regexSplit))
+    const regexPattern = /"([^"]*)"|'([^']*)'|\S+/gi;
 
     let matches = [];
     let match;
-    while ((match = regexPattern.exec(inputString)) !== null) {
-      const matchedPart = match[0] || match[1] || match[2];
-      matches.push(matchedPart);
+
+    //    ////Below is 'working'
+
+    while (match = regexPattern.exec(inputString)) {
+      //blaaah this isn't picking up correctly on paste with formatting.
+      // console.log('test regex on block', inputString.slice(lastIndex, match.index))
+
+      let currentPhrase = match[0];
+      currentPhrase = currentPhrase.replace(/["',.]/g, '')
+      matches.push(currentPhrase.trim());
+
     }
-    matches = matches.filter(entry => entry != ',')
     setRedactedPhrases(matches)
     console.log(redactedPhrases);
 
