@@ -49,7 +49,7 @@ function App() {
     // https://stackoverflow.com/questions/150033/regular-expression-to-match-non-ascii-characters
     // non-standard characters of any other kind may break this by introducing a single character of the double quote <">,
     // but current scrubbing of quotes later on may keep that from happening /shrug
-    console.log(block)
+
     let inputString = block;//back up a little
     //regex breakdown:
     //for double Q: /"([^"]*)" 
