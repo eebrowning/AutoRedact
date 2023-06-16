@@ -37,7 +37,7 @@ label {
   flex-direction: column;
   /* width: 50%; */
   max-width: 50%;
-  border: 1px solid red;
+  border: 1px solid chartreuse;
 }
 
 #middle-group {
